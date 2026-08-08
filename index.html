@@ -3,82 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bhargavi's Nexus | Arcade Hub</title>
+    <title>Bhargavi's Nexus | Central Platform Arcade</title>
+    <link rel="stylesheet" href="shared/arcade-theme.css">
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Canvas & Ambient Glowing Orbs Background -->
+    <canvas id="ambient-canvas"></canvas>
     <div class="background-orbs">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
     </div>
-    
+
+    <!-- Main Container -->
     <div class="container">
-        <header>
-            <h1>Bhargavi's <span>Nexus</span></h1>
-            <p>Welcome to the ultimate arcade platform built entirely from scratch.</p>
+        <!-- Top Navigation Header -->
+        <nav class="top-nav glass-panel">
+            <div class="nav-brand">
+                <span class="brand-icon">🎮</span>
+                <span class="brand-title">BHARGAVI'S <span>NEXUS</span></span>
+            </div>
+
+            <div class="nav-controls">
+                <button id="sound-toggle-btn" class="glass-btn sound-toggle" aria-label="Toggle Sound Effects">
+                    <span class="sound-icon" id="sound-icon">🔊</span>
+                    <span id="sound-label">Sound ON</span>
+                </button>
+                <button id="mobile-menu-btn" class="glass-btn mobile-only" aria-label="Toggle Mobile Navigation">
+                    <span id="menu-icon">☰</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Hero Banner Section -->
+        <header class="hero-section">
+            <h1 class="hero-title">Bhargavi's <span>Nexus</span></h1>
+            <p class="hero-subtitle">Next-Gen Glassmorphic Web Arcade Platform</p>
+
+            <!-- Live Platform Stats -->
+            <div class="stats-bar glass-panel">
+                <div class="stat-item">
+                    <span class="stat-value" id="stat-total-games">9</span>
+                    <span class="stat-label">Games Available</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value" id="stat-aggregate-score">0</span>
+                    <span class="stat-label">Total Platform Score</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value" id="stat-visible-games">9</span>
+                    <span class="stat-label">Showing</span>
+                </div>
+            </div>
         </header>
 
-        <main class="grid">
-            <a href="cyber-runner/index.html" class="game-card">
+        <!-- Search & Filter Controls Toolbar -->
+        <section class="controls-section glass-panel">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="game-search-input" placeholder="Search games... (Press '/' to focus)" autocomplete="off">
+                <button id="clear-search-btn" class="clear-btn hidden" aria-label="Clear search input">&times;</button>
+            </div>
+
+            <div class="filter-tags" id="category-filter-tags">
+                <button class="filter-tag active" data-category="all">All</button>
+                <button class="filter-tag" data-category="action">⚡ Action</button>
+                <button class="filter-tag" data-category="strategy">♟️ Strategy</button>
+                <button class="filter-tag" data-category="puzzle">🧠 Puzzle</button>
+                <button class="filter-tag" data-category="arcade">🏓 Arcade</button>
+            </div>
+        </section>
+
+        <!-- 9 Game Cards Grid -->
+        <main class="grid" id="game-cards-grid">
+            <!-- 1. Cyber Runner -->
+            <a href="cyber-runner/index.html" class="game-card glass-card" data-game-id="cyber-runner" data-category="action" data-title="Cyber Runner" data-desc="Dash through neon streets and dodge synthwave hazards.">
+                <div class="card-header">
+                    <span class="category-badge tag-action">⚡ Action</span>
+                    <div class="card-score-badge">BEST: <span class="score-val" id="score-cyber-runner">0</span></div>
+                </div>
                 <div class="game-icon">🏃</div>
                 <h2>Cyber Runner</h2>
-                <p>Run through the neon streets.</p>
+                <p>Dash through neon streets and dodge synthwave hazards.</p>
+                <div class="card-footer">
+                    <span class="launch-btn glass-btn">Launch Game →</span>
+                </div>
             </a>
-            
-            <a href="endless-runner/index.html" class="game-card">
+
+            <!-- 2. Endless Runner -->
+            <a href="endless-runner/index.html" class="game-card glass-card" data-game-id="endless-runner" data-category="action" data-title="Endless Runner" data-desc="Survive the perilous endless desert terrain & hazards.">
+                <div class="card-header">
+                    <span class="category-badge tag-action">⚡ Action</span>
+                    <div class="card-score-badge">BEST: <span class="score-val" id="score-endless-runner">0</span></div>
+                </div>
                 <div class="game-icon">🏜️</div>
                 <h2>Endless Runner</h2>
-                <p>Survive the endless desert.</p>
+                <p>Survive the perilous endless desert terrain & hazards.</p>
+                <div class="card-footer">
+                    <span class="launch-btn glass-btn">Launch Game →</span>
+                </div>
             </a>
 
-            <a href="space-shooter/index.html" class="game-card">
+            <!-- 3. Space Shooter -->
+            <a href="space-shooter/index.html" class="game-card glass-card" data-game-id="space-shooter" data-category="action" data-title="Space Shooter" data-desc="Defend deep space against waves of alien invaders.">
+                <div class="card-header">
+                    <span class="category-badge tag-action">⚡ Action</span>
+                    <div class="card-score-badge">BEST: <span class="score-val" id="score-space-shooter">0</span></div>
+                </div>
                 <div class="game-icon">🚀</div>
                 <h2>Space Shooter</h2>
-                <p>Defend the galaxy.</p>
+                <p>Defend deep space against waves of alien invaders.</p>
+                <div class="card-footer">
+                    <span class="launch-btn glass-btn">Launch Game →</span>
+                </div>
             </a>
 
-            <a href="tic-tac-toe/index.html" class="game-card">
-                <div class="game-icon">❌⭕</div>
-                <h2>Tic Tac Toe</h2>
-                <p>The classic duel.</p>
-            </a>
-
-            <a href="memory-card-game/index.html" class="game-card">
+            <!-- 4. Memory Cards -->
+            <a href="memory-card-game/index.html" class="game-card glass-card" data-game-id="memory-card-game" data-category="puzzle" data-title="Memory Cards" data-desc="Test and train your visual memory with matching pairs.">
+                <div class="card-header">
+                    <span class="category-badge tag-puzzle">🧠 Puzzle</span>
+                    <div class="card-score-badge">BEST: <span class="score-val" id="score-memory-card-game">0</span></div>
+                </div>
                 <div class="game-icon">🧠</div>
                 <h2>Memory Cards</h2>
-                <p>Test your brain power.</p>
+                <p>Test and train your visual memory with matching pairs.</p>
+                <div class="card-footer">
+                    <span class="launch-btn glass-btn">Launch Game →</span>
+                </div>
             </a>
 
-            <a href="snake-game/index.html" class="game-card">
-                <div class="game-icon">🐍</div>
-                <h2>Snake Game</h2>
-                <p>Eat, grow, survive.</p>
-            </a>
-
-            <a href="number-guessing/index.html" class="game-card">
+            <!-- 5. Number Guesser -->
+            <a href="number-guessing/index.html" class="game-card glass-card" data-game-id="number-guessing" data-category="puzzle" data-title="Number Guesser" data-desc="Deduce the secret number using strategic hints.">
+                <div class="card-header">
+                    <span class="category-badge tag-puzzle">🧠 Puzzle</span>
+                    <div class="card-score-badge">BEST: <span class="score-val" id="score-number-guessing">0</span></div>
+                </div>
                 <div class="game-icon">🔢</div>
                 <h2>Number Guesser</h2>
-                <p>Can you guess the digit?</p>
+                <p>Deduce the secret number using strategic hints.</p>
+                <div class="card-footer">
+                    <span class="launch-btn glass-btn">Launch Game →</span>
+                </div>
             </a>
 
-            <a href="chess-game-3d/index.html" class="game-card">
+            <!-- 6. 3D Chess -->
+            <a href="chess-game-3d/index.html" class="game-card glass-card" data-game-id="chess-game-3d" data-category="strategy" data-title="3D Chess" data-desc="Master tactical board positions against responsive AI.">
+                <div class="card-header">
+                    <span class="category-badge tag-strategy">♟️ Strategy</span>
+                    <div class="card-score-badge">BEST: <span class="score-val" id="score-chess-game-3d">0</span></div>
+                </div>
                 <div class="game-icon">♟️</div>
                 <h2>3D Chess</h2>
-                <p>Checkmate in style.</p>
+                <p>Master tactical board positions against responsive AI.</p>
+                <div class="card-footer">
+                    <span class="launch-btn glass-btn">Launch Game →</span>
+                </div>
             </a>
 
-            <a href="pong-game/index.html" class="game-card">
+            <!-- 7. Tic Tac Toe -->
+            <a href="tic-tac-toe/index.html" class="game-card glass-card" data-game-id="tic-tac-toe" data-category="strategy" data-title="Tic Tac Toe" data-desc="Challenge smart AI algorithms in classic 3x3 combat.">
+                <div class="card-header">
+                    <span class="category-badge tag-strategy">♟️ Strategy</span>
+                    <div class="card-score-badge">BEST: <span class="score-val" id="score-tic-tac-toe">0</span></div>
+                </div>
+                <div class="game-icon">❌⭕</div>
+                <h2>Tic Tac Toe</h2>
+                <p>Challenge smart AI algorithms in classic 3x3 combat.</p>
+                <div class="card-footer">
+                    <span class="launch-btn glass-btn">Launch Game →</span>
+                </div>
+            </a>
+
+            <!-- 8. Pong Game -->
+            <a href="pong-game/index.html" class="game-card glass-card" data-game-id="pong-game" data-category="arcade" data-title="Pong Game" data-desc="Fast-paced arcade paddle duel with true physics.">
+                <div class="card-header">
+                    <span class="category-badge tag-arcade">🏓 Arcade</span>
+                    <div class="card-score-badge">BEST: <span class="score-val" id="score-pong-game">0</span></div>
+                </div>
                 <div class="game-icon">🏓</div>
                 <h2>Pong Game</h2>
-                <p>The retro classic.</p>
+                <p>Fast-paced arcade paddle duel with true physics.</p>
+                <div class="card-footer">
+                    <span class="launch-btn glass-btn">Launch Game →</span>
+                </div>
+            </a>
+
+            <!-- 9. Snake Game -->
+            <a href="snake-game/index.html" class="game-card glass-card" data-game-id="snake-game" data-category="arcade" data-title="Snake Game" data-desc="Eat glowing pellets, grow your length, survive the arena.">
+                <div class="card-header">
+                    <span class="category-badge tag-arcade">🏓 Arcade</span>
+                    <div class="card-score-badge">BEST: <span class="score-val" id="score-snake-game">0</span></div>
+                </div>
+                <div class="game-icon">🐍</div>
+                <h2>Snake Game</h2>
+                <p>Eat glowing pellets, grow your length, survive the arena.</p>
+                <div class="card-footer">
+                    <span class="launch-btn glass-btn">Launch Game →</span>
+                </div>
             </a>
         </main>
-        
-        <footer>
-            <p>Built with ❤️ by Bhargavi</p>
+
+        <!-- Empty State UI -->
+        <div id="empty-state" class="empty-state glass-panel hidden">
+            <div class="empty-icon">👾</div>
+            <h3>No Games Found</h3>
+            <p>We couldn't find any games matching your current search query or active filter tab.</p>
+            <button id="reset-filter-btn" class="glass-btn highlight">Reset Filters</button>
+        </div>
+
+        <!-- Dashboard Footer -->
+        <footer class="dashboard-footer glass-panel">
+            <p>Bhargavi's Nexus Arcade &bull; Crafted with Glassmorphic Design &bull; 9 Games Active</p>
         </footer>
     </div>
+
+    <!-- Mobile Navigation Drawer Overlay -->
+    <div id="mobile-drawer" class="mobile-drawer glass-panel hidden">
+        <div class="drawer-header">
+            <h3>Arcade Menu</h3>
+            <button id="close-drawer-btn" class="glass-btn icon-only">&times;</button>
+        </div>
+        <div class="drawer-body">
+            <div class="drawer-section">
+                <h4>Categories</h4>
+                <div class="drawer-tags" id="drawer-category-tags">
+                    <button class="glass-btn drawer-tag-btn active" data-category="all">All Games</button>
+                    <button class="glass-btn drawer-tag-btn" data-category="action">⚡ Action</button>
+                    <button class="glass-btn drawer-tag-btn" data-category="strategy">♟️ Strategy</button>
+                    <button class="glass-btn drawer-tag-btn" data-category="puzzle">🧠 Puzzle</button>
+                    <button class="glass-btn drawer-tag-btn" data-category="arcade">🏓 Arcade</button>
+                </div>
+            </div>
+            <div class="drawer-section">
+                <h4>Platform Actions</h4>
+                <button id="reset-scores-btn" class="glass-btn highlight block-btn">Reset Platform High Scores</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Assets -->
+    <script src="shared/arcade-sdk.js"></script>
+    <script src="dashboard.js"></script>
 </body>
 </html>

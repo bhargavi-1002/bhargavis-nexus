@@ -1,0 +1,266 @@
+/* ==========================================================================
+   BHARGAVI'S NEXUS - GLOBAL GLASSMORPHIC DESIGN SYSTEM
+   ========================================================================== */
+
+:root {
+    /* Color Palette - Dark Slate Base */
+    --bg-dark-deep: #020617;
+    --bg-dark-primary: #0f172a;
+    --bg-dark-surface: #1e293b;
+    --bg-dark-elevated: #334155;
+
+    /* Glassmorphism Surface Tokens */
+    --glass-bg-low: rgba(255, 255, 255, 0.03);
+    --glass-bg-med: rgba(255, 255, 255, 0.06);
+    --glass-bg-high: rgba(255, 255, 255, 0.12);
+    
+    --glass-border-subtle: 1px solid rgba(255, 255, 255, 0.08);
+    --glass-border-standard: 1px solid rgba(255, 255, 255, 0.15);
+    --glass-border-bright: 1px solid rgba(255, 255, 255, 0.3);
+
+    --glass-blur-sm: blur(8px);
+    --glass-blur-md: blur(12px);
+    --glass-blur-lg: blur(20px);
+
+    /* Vibrant Neon Accent Colors */
+    --accent-cyan: #38bdf8;
+    --accent-indigo: #818cf8;
+    --accent-rose: #f43f5e;
+    --accent-emerald: #10b981;
+    --accent-purple: #a855f7;
+    --accent-amber: #f59e0b;
+
+    /* Glowing Accent Box-Shadows */
+    --glow-cyan: 0 0 20px rgba(56, 189, 248, 0.35);
+    --glow-indigo: 0 0 20px rgba(129, 140, 248, 0.35);
+    --glow-rose: 0 0 20px rgba(244, 63, 94, 0.35);
+    --glow-emerald: 0 0 20px rgba(16, 185, 129, 0.35);
+    --glow-purple: 0 0 20px rgba(168, 85, 247, 0.35);
+    --glow-amber: 0 0 20px rgba(245, 158, 11, 0.35);
+
+    /* Text Colors */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    /* Typography Scale */
+    --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --fs-xs: 0.75rem;
+    --fs-sm: 0.875rem;
+    --fs-base: 1rem;
+    --fs-lg: 1.125rem;
+    --fs-xl: 1.25rem;
+    --fs-2xl: 1.5rem;
+    --fs-3xl: 2rem;
+    --fs-4xl: 3rem;
+    --fs-5xl: 4rem;
+
+    /* Border Radii */
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+
+    /* Motion Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   Custom Glassmorphic Scrollbar
+   ========================================================================== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark-deep);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-full);
+    border: 2px solid var(--bg-dark-deep);
+    backdrop-filter: var(--glass-blur-sm);
+    -webkit-backdrop-filter: var(--glass-blur-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-indigo);
+    box-shadow: var(--glow-indigo);
+}
+
+/* ==========================================================================
+   Global Base & Glass Components
+   ========================================================================== */
+
+/* Glass Panel Component */
+.glass-panel {
+    background: var(--glass-bg-med);
+    border: var(--glass-border-standard);
+    backdrop-filter: var(--glass-blur-md);
+    -webkit-backdrop-filter: var(--glass-blur-md);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Interactive Glass Card */
+.glass-card {
+    background: var(--glass-bg-low);
+    border: var(--glass-border-standard);
+    backdrop-filter: var(--glass-blur-md);
+    -webkit-backdrop-filter: var(--glass-blur-md);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    pointer-events: none;
+}
+
+.glass-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), var(--glow-indigo);
+}
+
+.glass-card:hover::before {
+    opacity: 1;
+}
+
+/* Glass Buttons */
+.glass-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    font-family: var(--font-family);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.07);
+    border: var(--glass-border-standard);
+    backdrop-filter: var(--glass-blur-sm);
+    -webkit-backdrop-filter: var(--glass-blur-sm);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all var(--transition-normal);
+    user-select: none;
+}
+
+.glass-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), var(--glow-cyan);
+}
+
+.glass-btn:active {
+    transform: scale(0.96);
+}
+
+.glass-btn.highlight {
+    background: linear-gradient(135deg, rgba(129, 140, 248, 0.3), rgba(168, 85, 247, 0.3));
+    border-color: rgba(168, 85, 247, 0.4);
+}
+
+.glass-btn.highlight:hover {
+    background: linear-gradient(135deg, rgba(129, 140, 248, 0.5), rgba(168, 85, 247, 0.5));
+    box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+}
+
+/* Category Badges & Tags */
+.category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    backdrop-filter: var(--glass-blur-sm);
+    -webkit-backdrop-filter: var(--glass-blur-sm);
+    border: var(--glass-border-subtle);
+}
+
+.tag-action {
+    background: rgba(56, 189, 248, 0.15);
+    color: var(--accent-cyan);
+    border-color: rgba(56, 189, 248, 0.3);
+}
+
+.tag-puzzle {
+    background: rgba(168, 85, 247, 0.15);
+    color: var(--accent-purple);
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+.tag-strategy {
+    background: rgba(129, 140, 248, 0.15);
+    color: var(--accent-indigo);
+    border-color: rgba(129, 140, 248, 0.3);
+}
+
+.tag-arcade {
+    background: rgba(244, 63, 94, 0.15);
+    color: var(--accent-rose);
+    border-color: rgba(244, 63, 94, 0.3);
+}
+
+/* Floating Arcade SDK Back Button Overlay */
+.arcade-back-btn {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    font-family: var(--font-family);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--text-primary);
+    background: rgba(15, 23, 42, 0.75);
+    border: var(--glass-border-standard);
+    backdrop-filter: var(--glass-blur-md);
+    -webkit-backdrop-filter: var(--glass-blur-md);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), var(--glow-cyan);
+    transition: all var(--transition-normal);
+}
+
+.arcade-back-btn:hover {
+    background: rgba(30, 41, 59, 0.9);
+    transform: translateY(-2px) scale(1.05);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 12px 30px rgba(56, 189, 248, 0.4);
+}
+
+/* Utility Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn var(--transition-normal) forwards;
+}
