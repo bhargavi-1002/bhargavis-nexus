@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⚡ Stratos Memory Matrix</title>
+    <meta name="description" content="Decode the mainframe in Stratos Memory Matrix - a premium cyber-neon memory matching grid featuring integrated ambient sound synthesizers.">
+    <meta name="keywords" content="memory matrix, card match game, memory game online, neon web game, puzzle games">
+    <meta name="robots" content="index, follow">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="⚡ Stratos Memory Matrix - Online Brain Trainer">
+    <meta property="og:description" content="Test your mental endurance. Decode the neon grid system inside minimal moves.">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💾</text></svg>">
+
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --panel-color: #131a26;
+            --border-color: #1e293b;
+            --cyan-neon: #00bfff;
+            --green-neon: #00ff88;
+            --danger-neon: #ff0055;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 420px;
+            background: var(--panel-color);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        header { text-align: center; margin-bottom: 15px; }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--cyan-neon);
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+        }
+
+        .ui-panel {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .stat-box {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        .stat-box span { color: var(--text-main); font-size: 1rem; }
+
+        #restartBtn, #modalBtn {
+            background: transparent;
+            border: 2px solid var(--cyan-neon);
+            color: var(--cyan-neon);
+            padding: 10px 20px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            width: 100%;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        #restartBtn:hover, #modalBtn:hover {
+            background: var(--cyan-neon);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.4);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            margin-top: 5px;
+        }
+
+        .matrix-card {
+            perspective: 1000px;
+            cursor: pointer;
+            aspect-ratio: 1 / 1;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .matrix-card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-back {
+            background: #0d131f;
+            border: 2px solid var(--border-color);
+            color: var(--cyan-neon);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .matrix-card:hover .card-back {
+            border-color: var(--cyan-neon);
+        }
+
+        .card-front {
+            background: #1e293b;
+            border: 2px solid var(--green-neon);
+            font-size: 1.8rem;
+            transform: rotateY(180deg);
+        }
+
+        .matrix-card.matched .card-front {
+            border-color: rgba(0, 255, 136, 0.3);
+            background: rgba(0, 255, 136, 0.05);
+            opacity: 0.6;
+        }
+
+        /* Modal Overlay Window Layout */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(11, 15, 25, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .modal.active { opacity: 1; pointer-events: auto; }
+
+        .modal-content {
+            background: var(--panel-color);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 340px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .modal-content h2 {
+            color: var(--green-neon);
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .modal-content p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+
+        .modal-content p span { color: var(--text-main); font-weight: bold; }
+        #modalBtn { margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <header>
+            <h1>MEMORY MATRIX</h1>
+            <div class="ui-panel">
+                <div class="stat-box">MOVES: <span id="movesValue">0</span></div>
+                <div class="stat-box">TIME: <span id="timerValue">00:00</span></div>
+            </div>
+            <button id="restartBtn">START GAME</button>
+        </header>
+        <div class="grid-container" id="gridContainer"></div>
+    </div>
+
+    <div class="modal" id="winModal">
+        <div class="modal-content">
+            <h2>SYSTEM CLEARED</h2>
+            <p>Total Moves: <span id="finalMoves">0</span></p>
+            <p>Time Taken: <span id="finalTime">00:00</span></p>
+            <button id="modalBtn">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <script>
+        const gridContainer = document.getElementById('gridContainer');
+        const movesValue = document.getElementById('movesValue');
+        const timerValue = document.getElementById('timerValue');
+        const restartBtn = document.getElementById('restartBtn');
+        const winModal = document.getElementById('winModal');
+        const finalMoves = document.getElementById('finalMoves');
+        const finalTime = document.getElementById('finalTime');
+        const modalBtn = document.getElementById('modalBtn');
+
+        const cardSymbols = ['👾', '🤖', '🛸', '🚀', '🌌', '📡', '🔋', '💾'];
+        let deck = [...cardSymbols, ...cardSymbols];
+        let flippedCards = [];
+        let matchedCount = 0;
+        let moves = 0;
+        let timeElapsed = 0;
+        let timerInterval = null;
+        let isLockClock = false;
+        let hasGameStarted = false;
+
+        // --- SOOTHING AUDIO ENGINE (WEB AUDIO API) ---
+        let audioCtx = null;
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playTone(freq, type, duration, vol, slideTo) {
+            try {
+                initAudio(); if (!audioCtx) return;
+                let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+                osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                if(slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, audioCtx.currentTime + duration);
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+                osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+        function playFlip() { playTone(280, "sine", 0.06, 0.03, 350); }
+        function playMatch() { playTone(523.25, "triangle", 0.12, 0.08); setTimeout(() => playTone(659.25, "triangle", 0.18, 0.06), 60); }
+        function playMismatch() { playTone(160, "sine", 0.15, 0.08, 100); }
+        function playWin() {
+            let notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((f, i) => setTimeout(() => playTone(f, "sine", 0.3, 0.08 - (i*0.01)), i * 90));
+        }
+
+        // Initialize Game Mechanics
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function formatTime(seconds) {
+            const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const secs = String(seconds % 60).padStart(2, '0');
+            return `${mins}:${secs}`;
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeElapsed++;
+                timerValue.textContent = formatTime(timeElapsed);
+            }, 1000);
+        }
+
+        function createGrid() {
+            gridContainer.innerHTML = '';
+            shuffle(deck);
+            deck.forEach((symbol, index) => {
+                const card = document.createElement('div');
+                card.classList.add('matrix-card');
+                card.dataset.symbol = symbol;
+                card.dataset.index = index;
+
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">${symbol}</div>
+                        <div class="card-back">//</div>
+                    </div>
+                `;
+                card.addEventListener('click', handleCardClick);
+                gridContainer.appendChild(card);
+            });
+        }
+
+        function handleCardClick() {
+            if (isLockClock || this.classList.contains('flipped') || this.classList.contains('matched')) return;
+
+            if (!hasGameStarted) {
+                hasGameStarted = true;
+                startTimer();
+                restartBtn.textContent = "RESET MATRIX";
+            }
+
+            playFlip();
+            this.classList.add('flipped');
+            flippedCards.push(this);
+
+            if (flippedCards.length === 2) {
+                moves++;
+                movesValue.textContent = moves;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            isLockClock = true;
+            const [card1, card2] = flippedCards;
+
+            if (card1.dataset.symbol === card2.dataset.symbol) {
+                setTimeout(() => {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    matchedCount += 2;
+                    playMatch();
+                    flippedCards = [];
+                    isLockClock = false;
+
+                    if (matchedCount === deck.length) {
+                        handleWin();
+                    }
+                }, 300);
+            } else {
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    playMismatch();
+                    flippedCards = [];
+                    isLockClock = false;
+                }, 700);
+            }
+        }
+
+        function handleWin() {
+            clearInterval(timerInterval);
+            playWin();
+            finalMoves.textContent = moves;
+            finalTime.textContent = formatTime(timeElapsed);
+            setTimeout(() => winModal.classList.add('active'), 500);
+        }
+
+        function resetGame() {
+            clearInterval(timerInterval);
+            flippedCards = [];
+            matchedCount = 0;
+            moves = 0;
+            timeElapsed = 0;
+            isLockClock = false;
+            hasGameStarted = false;
+            
+            movesValue.textContent = '0';
+            timerValue.textContent = '00:00';
+            restartBtn.textContent = 'START GAME';
+            winModal.classList.remove('active');
+            
+            createGrid();
+        }
+
+        restartBtn.addEventListener('click', () => { playTone(440, "sine", 0.05, 0.04); resetGame(); });
+        modalBtn.addEventListener('click', () => { playTone(440, "sine", 0.05, 0.04); resetGame(); });
+
+        // Initial Boot
+        createGrid();
+    </script>
+</body>
+</html>

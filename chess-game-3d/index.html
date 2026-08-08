@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Puzzle - Mate in 1</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>♚ Chess Puzzle - Mate in 1 ♚</h1>
+            <p class="instruction">Find the checkmate in one move!</p>
+        </div>
+
+        <div class="game-info">
+            <div class="turn">Turn: <span id="currentTurn">White</span></div>
+            <div class="status" id="gameStatus"></div>
+        </div>
+
+        <div class="board-container">
+            <div id="chessboard" class="chessboard"></div>
+        </div>
+
+        <div class="controls">
+            <button id="resetBtn" class="btn">Reset Puzzle</button>
+            <button id="nextPuzzleBtn" class="btn">Next Puzzle</button>
+        </div>
+
+        <div class="puzzle-info">
+            <h3>Puzzle #1</h3>
+            <p>White to move. Find checkmate in 1 move.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

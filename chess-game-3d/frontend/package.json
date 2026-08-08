@@ -1,0 +1,32 @@
+{
+  "name": "chess-game-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for 3D chess game",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "export": "next build && next export"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.10.3",
+    "@types/three": "^0.128.0",
+    "axios": "^1.5.0",
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "socket.io-client": "^4.7.1",
+    "tailwindcss": "^3.3.0",
+    "three": "^0.128.0",
+    "zustand": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "typescript": "^5.2.0"
+  }
+}
