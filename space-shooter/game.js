@@ -167,6 +167,9 @@ function gameOver() {
     playObstacleHitSound();
     setTimeout(() => { playGameOverSound(); }, 300); 
     if (score > highScore) { highScore = score; localStorage.setItem('spaceShooterHighScore', highScore); highScoreValue.textContent = highScore; }
+    if (typeof ArcadeSDK !== 'undefined') {
+        ArcadeSDK.saveHighScore('space-shooter', score);
+    }
     ctx.fillStyle = 'rgba(2, 2, 8, 0.85)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#ff0055'; ctx.font = 'bold 36px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText('MISSION FAILED', canvas.width / 2, canvas.height / 2 - 20);
     ctx.fillStyle = '#fff'; ctx.font = '16px Segoe UI'; ctx.fillText('FINAL SCORE: ' + score, canvas.width / 2, canvas.height / 2 + 20);
@@ -177,15 +180,30 @@ function animate() {
     ctx.fillStyle = '#020208'; ctx.fillRect(0, 0, canvas.width, canvas.height); stars.forEach(star => { star.update(); star.draw(); });
     if (!gameActive) return;
     player.update(); player.draw(); handleWaves();
-    bullets.forEach((bullet, bIndex) => { bullet.update(); bullet.draw(); if (bullet.y + bullet.height < 0) bullets.splice(bIndex, 1); });
-    enemies.forEach((enemy, eIndex) => {
-        enemy.update(); enemy.draw();
-        if (checkCollision(player, enemy)) { gameOver(); }
-        bullets.forEach((bullet, bIndex) => {
-            if (checkCollision(bullet, enemy)) { playExplosionSound(); enemies.splice(eIndex, 1); bullets.splice(bIndex, 1); score += 10; scoreValue.textContent = score; }
-        });
+    for (let bIndex = bullets.length - 1; bIndex >= 0; bIndex--) {
+        let bullet = bullets[bIndex];
+        bullet.update();
+        bullet.draw();
+        if (bullet.y + bullet.height < 0) bullets.splice(bIndex, 1);
+    }
+    for (let eIndex = enemies.length - 1; eIndex >= 0; eIndex--) {
+        let enemy = enemies[eIndex];
+        enemy.update();
+        enemy.draw();
+        if (checkCollision(player, enemy)) { gameOver(); break; }
+        for (let bIndex = bullets.length - 1; bIndex >= 0; bIndex--) {
+            let bullet = bullets[bIndex];
+            if (checkCollision(bullet, enemy)) {
+                playExplosionSound();
+                enemies.splice(eIndex, 1);
+                bullets.splice(bIndex, 1);
+                score += 10;
+                scoreValue.textContent = score;
+                break;
+            }
+        }
         if (enemy.y > canvas.height) enemies.splice(eIndex, 1);
-    });
+    }
     requestAnimationFrame(animate);
 }
 

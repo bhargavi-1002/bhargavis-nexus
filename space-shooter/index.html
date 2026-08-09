@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Space Shooter Pro Mini</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>??</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
 <link rel="stylesheet" href="../shared/arcade-theme.css">
 <script src="../shared/arcade-sdk.js"></script>
 </head>
 <body>
-    <div class="game-container">
+    <a href="../index.html" class="arcade-back-btn">&larr; Back to Arcade</a>
+    <div class="game-container glass-panel">
         <div class="ui-panel">
             <div class="stat-box">SCORE: <span id="scoreValue">0</span></div>
             <div class="stat-box">WAVE: <span id="waveValue">1</span></div>
@@ -23,13 +24,13 @@
         
         <div class="mobile-controls">
             <div class="dir-pad">
-                <button class="ctrl-btn" id="btnLeft">?</button>
-                <button class="ctrl-btn" id="btnRight">?</button>
+                <button class="ctrl-btn" id="btnLeft">&larr;</button>
+                <button class="ctrl-btn" id="btnRight">&rarr;</button>
             </div>
             <button class="ctrl-btn fire-btn" id="btnFire">FIRE</button>
         </div>
 
-        <div class="instructions">Use ? ? arrows or A / D keys to move. Press SPACE or Touch FIRE to shoot.</div>
+        <div class="instructions">Use &larr; &rarr; arrows or A / D keys to move. Press SPACE or Touch FIRE to shoot.</div>
     </div>
     <script src="game.js"></script>
 </body>

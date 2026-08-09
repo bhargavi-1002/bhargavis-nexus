@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>⚡ Cyber Tic Tac Toe Pro</title>
-    <link rel="stylesheet" href="/shared/arcade-theme.css">
-    <script src="/shared/arcade-sdk.js"></script>
+    <link rel="stylesheet" href="../shared/arcade-theme.css">
+    <script src="../shared/arcade-sdk.js"></script>
     <meta name="description" content="Play the ultimate Neon Cyber Tic Tac Toe game. Challenge a friend local-coop or take on the un-beatable Minimax neural network matrix AI.">
     <meta name="keywords" content="tic tac toe, play tic tac toe, unbeatable ai, neon web games, retro arcade">
     <meta name="robots" content="index, follow">
@@ -42,6 +42,16 @@
             min-height: 100vh;
             padding: 15px;
             overflow-x: hidden;
+        }
+
+        .arcade-back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            z-index: 100;
         }
 
         .container {
@@ -208,6 +218,7 @@
     </style>
 </head>
 <body>
+    <a href="../index.html" class="arcade-back-btn">← Back to Arcade</a>
 
     <div class="container glass-panel">
         <div class="header">
@@ -388,6 +399,9 @@
                 scores[currentPlayer]++;
                 updateScoreBoard();
                 soundWin();
+                if (typeof ArcadeSDK !== 'undefined') {
+                    ArcadeSDK.saveHighScore('tic-tac-toe', scores.X * 100);
+                }
                 showGameOver(`${currentPlayer} DOMINATES!`, `Successfully cleared matrix row sequence.`);
                 return;
             }
@@ -397,6 +411,9 @@
                 scores.draw++;
                 updateScoreBoard();
                 soundDraw();
+                if (typeof ArcadeSDK !== 'undefined') {
+                    ArcadeSDK.saveHighScore('tic-tac-toe', scores.X * 100);
+                }
                 showGameOver("GRID TIE DETECTED", "Matrix allocation filled with zero variable outcomes.");
                 return;
             }

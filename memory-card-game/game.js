@@ -1,4 +1,4 @@
-const gridContainer = document.getElementById('gridContainer');
+const gridContainer = document.getElementById('gridContainer') || document.getElementById('game-board') || document.getElementById('grid') || document.querySelector('.grid-container');
 const movesValue = document.getElementById('movesValue');
 const timerValue = document.getElementById('timerValue');
 const restartBtn = document.getElementById('restartBtn');

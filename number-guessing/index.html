@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🟩 Number Guessing Game</title>
-    <link rel="stylesheet" href="/shared/arcade-theme.css">
-    <script src="/shared/arcade-sdk.js"></script>
+    <link rel="stylesheet" href="../shared/arcade-theme.css">
+    <script src="../shared/arcade-sdk.js"></script>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
     <style>
         body {
@@ -61,6 +61,18 @@
             transition: background 0.2s;
         }
         button:hover { background-color: #45a049; }
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-secondary {
+            background-color: #00bcd4;
+        }
+        .btn-secondary:hover {
+            background-color: #008c9e;
+        }
         #message {
             margin-top: 20px;
             font-size: 18px;
@@ -73,6 +85,8 @@
 </head>
 <body>
 
+<a href="../index.html" class="arcade-back-btn">← Back to Arcade</a>
+
 <div class="game-container glass-panel">
     <h1>🟩 Guessing Game</h1>
     <p>I am thinking of a number between 1 and 100.</p>
@@ -84,7 +98,10 @@
 
     <input type="number" id="userGuess" min="1" max="100" placeholder="Enter 1-100">
     <br>
-    <button id="actionBtn" onclick="checkGuess()">Submit Guess</button>
+    <div class="btn-group">
+        <button id="submitBtn" class="guess-btn" onclick="checkGuess()">Submit Guess</button>
+        <button id="restartBtn" class="reset-btn btn-secondary" onclick="resetGame()">Restart Game</button>
+    </div>
     
     <div id="message"></div>
 </div>
@@ -99,12 +116,15 @@
     const messageDiv = document.getElementById('message');
     const attemptsSpan = document.getElementById('attempts');
     const scoreSpan = document.getElementById('score');
-    const actionBtn = document.getElementById('actionBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const restartBtn = document.getElementById('restartBtn') || document.getElementById('resetBtn');
 
     // Allow pressing "Enter" key to submit
-    guessInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') checkGuess();
-    });
+    if (guessInput) {
+        guessInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkGuess();
+        });
+    }
 
     function checkGuess() {
         if (gameOver) {
@@ -112,7 +132,7 @@
             return;
         }
 
-        let guess = parseInt(guessInput.value);
+        let guess = parseInt(guessInput.value, 10);
 
         // Validation
         if (isNaN(guess) || guess < 1 || guess > 100) {
@@ -130,7 +150,7 @@
         
         // Deduct resources on wrong guess
         attemptsLeft--;
-        score -= 10;
+        score = Math.max(0, score - 10);
         attemptsSpan.textContent = attemptsLeft;
         scoreSpan.textContent = score;
 
@@ -154,9 +174,12 @@
 
     function endGame(isWin) {
         gameOver = true;
-        actionBtn.textContent = 'Play Again';
-        actionBtn.style.backgroundColor = '#00bcd4';
+        submitBtn.textContent = 'Play Again';
+        submitBtn.style.backgroundColor = '#00bcd4';
         guessInput.disabled = true;
+        if (typeof ArcadeSDK !== 'undefined' && ArcadeSDK.saveHighScore) {
+            ArcadeSDK.saveHighScore('number-guessing', isWin ? score : 0);
+        }
     }
 
     function resetGame() {
@@ -171,8 +194,8 @@
         guessInput.value = '';
         guessInput.disabled = false;
         
-        actionBtn.textContent = 'Submit Guess';
-        actionBtn.style.backgroundColor = '#4caf50';
+        submitBtn.textContent = 'Submit Guess';
+        submitBtn.style.backgroundColor = '#4caf50';
         guessInput.focus();
     }
 </script>

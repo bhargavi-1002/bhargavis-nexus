@@ -1,4 +1,4 @@
-// Main Application
+// Main Application - Chess 3D / Chess Puzzle
 const pieces = {
     'P': '♙', 'N': '♘', 'B': '♗', 'R': '♖', 'Q': '♕', 'K': '♔',
     'p': '♟', 'n': '♞', 'b': '♝', 'r': '♜', 'q': '♛', 'k': '♚'
@@ -7,67 +7,74 @@ const pieces = {
 class ChessApp {
     constructor() {
         this.currentSection = 'playSection';
-        this.gameManager = new GameManager();
-        this.puzzleEngine = new PuzzleEngine();
+        this.gameManager = typeof GameManager !== 'undefined' ? new GameManager() : null;
+        this.puzzleEngine = typeof PuzzleEngine !== 'undefined' ? new PuzzleEngine() : null;
         this.selectedSquare = null;
         this.validMoves = [];
         
         this.initializeEventListeners();
-        this.generateInitialPuzzles();
+        if (this.puzzleEngine) {
+            this.generateInitialPuzzles();
+        }
     }
 
     initializeEventListeners() {
         // Navigation
-        document.getElementById('navPlay').addEventListener('click', () => this.switchSection('playSection'));
-        document.getElementById('navPuzzles').addEventListener('click', () => this.switchSection('puzzlesSection'));
-        document.getElementById('navLeaderboard').addEventListener('click', () => this.switchSection('statsSection'));
+        document.getElementById('navPlay')?.addEventListener('click', (e) => this.switchSection('playSection', e));
+        document.getElementById('navPuzzles')?.addEventListener('click', (e) => this.switchSection('puzzlesSection', e));
+        document.getElementById('navLeaderboard')?.addEventListener('click', (e) => this.switchSection('statsSection', e));
 
         // Mode selection
         document.querySelectorAll('.mode-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => this.selectMode(e.target.dataset.mode));
+            btn.addEventListener('click', (e) => this.selectMode(e.target.dataset.mode, e));
         });
 
         // Difficulty selection
         document.querySelectorAll('.diff-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => this.selectDifficulty(e.target.dataset.level));
+            btn.addEventListener('click', (e) => this.selectDifficulty(e.target.dataset.level, e));
         });
 
         // Time selection
         document.querySelectorAll('.time-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => this.selectTimeControl(e.target.dataset.time));
+            btn.addEventListener('click', (e) => this.selectTimeControl(e.target.dataset.time, e));
         });
 
         // Game buttons
-        document.getElementById('startAIGame').addEventListener('click', () => this.startAIGame());
-        document.getElementById('startTimedGame').addEventListener('click', () => this.startTimedGame());
-        document.getElementById('generatePuzzle').addEventListener('click', () => this.loadNewPuzzle());
+        document.getElementById('startAIGame')?.addEventListener('click', () => this.startAIGame());
+        document.getElementById('startTimedGame')?.addEventListener('click', () => this.startTimedGame());
+        document.getElementById('generatePuzzle')?.addEventListener('click', () => this.loadNewPuzzle());
 
         // Game controls
-        document.getElementById('resignBtn').addEventListener('click', () => this.gameManager.resign());
-        document.getElementById('drawBtn').addEventListener('click', () => this.gameManager.offerDraw());
-        document.getElementById('closeGame').addEventListener('click', () => this.closeGameModal());
-        document.getElementById('closePuzzle').addEventListener('click', () => this.closePuzzleModal());
+        document.getElementById('resignBtn')?.addEventListener('click', () => this.gameManager?.resign());
+        document.getElementById('drawBtn')?.addEventListener('click', () => this.gameManager?.offerDraw());
+        document.getElementById('closeGame')?.addEventListener('click', () => this.closeGameModal());
+        document.getElementById('closePuzzle')?.addEventListener('click', () => this.closePuzzleModal());
 
-        // Puzzle controls
-        document.getElementById('puzzleResetBtn').addEventListener('click', () => this.resetPuzzle());
-        document.getElementById('nextPuzzleBtn').addEventListener('click', () => this.loadNewPuzzle());
+        // Reset and Next controls
+        const resetBtn = document.getElementById('resetBtn') || document.getElementById('puzzleResetBtn');
+        resetBtn?.addEventListener('click', () => this.resetPuzzle());
+
+        document.getElementById('nextPuzzleBtn')?.addEventListener('click', () => this.loadNewPuzzle());
 
         // Puzzle filter
-        document.getElementById('difficultyFilter').addEventListener('change', (e) => {
+        document.getElementById('difficultyFilter')?.addEventListener('change', (e) => {
             this.filterPuzzles(e.target.value);
         });
 
         // Game callbacks
-        this.gameManager.onMove(() => this.updateGameBoard());
-        this.gameManager.onGameOver((result) => this.handleGameOver(result));
+        if (this.gameManager) {
+            this.gameManager.onMove(() => this.updateGameBoard());
+            this.gameManager.onGameOver((result) => this.handleGameOver(result));
+        }
     }
 
-    switchSection(sectionId) {
+    switchSection(sectionId, e) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(sectionId).classList.add('active');
+        const sec = document.getElementById(sectionId);
+        if (sec) sec.classList.add('active');
         
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
+        if (e && e.target) e.target.classList.add('active');
 
         this.currentSection = sectionId;
 
@@ -76,24 +83,25 @@ class ChessApp {
         }
     }
 
-    selectMode(mode) {
+    selectMode(mode, e) {
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
+        if (e && e.target) e.target.classList.add('active');
     }
 
-    selectDifficulty(level) {
+    selectDifficulty(level, e) {
         document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        this.selectedDifficulty = parseInt(level);
+        if (e && e.target) e.target.classList.add('active');
+        this.selectedDifficulty = parseInt(level, 10);
     }
 
-    selectTimeControl(time) {
+    selectTimeControl(time, e) {
         document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        this.selectedTimeControl = parseInt(time);
+        if (e && e.target) e.target.classList.add('active');
+        this.selectedTimeControl = parseInt(time, 10);
     }
 
     startAIGame() {
+        if (!this.gameManager) return;
         const difficulty = this.selectedDifficulty || 2;
         this.gameManager.startAIGame(difficulty);
         this.openGameModal();
@@ -101,6 +109,7 @@ class ChessApp {
     }
 
     startTimedGame() {
+        if (!this.gameManager) return;
         const time = this.selectedTimeControl || 600;
         this.gameManager.startTimedGame(time);
         this.openGameModal();
@@ -108,7 +117,9 @@ class ChessApp {
     }
 
     loadNewPuzzle() {
-        const difficulty = document.getElementById('difficultyFilter').value;
+        if (!this.puzzleEngine) return;
+        const diffEl = document.getElementById('difficultyFilter');
+        const difficulty = diffEl ? diffEl.value : null;
         const puzzle = this.puzzleEngine.generateNewPuzzle(difficulty || null);
         this.renderPuzzleBoard();
         this.openPuzzleModal();
@@ -116,42 +127,53 @@ class ChessApp {
     }
 
     resetPuzzle() {
-        if (this.puzzleEngine.currentPuzzle) {
+        if (this.puzzleEngine && this.puzzleEngine.currentPuzzle) {
             this.renderPuzzleBoard();
-            document.getElementById('puzzleStatus').textContent = '';
-            document.getElementById('puzzleStatus').className = 'puzzle-status';
+            const statusDiv = document.getElementById('gameStatus') || document.getElementById('puzzleStatus');
+            if (statusDiv) {
+                statusDiv.textContent = '';
+                statusDiv.className = 'status';
+            }
         }
     }
 
     openGameModal() {
-        document.getElementById('gameModal').classList.add('active');
+        const modal = document.getElementById('gameModal');
+        if (modal) modal.classList.add('active');
     }
 
     closeGameModal() {
-        document.getElementById('gameModal').classList.remove('active');
-        this.gameManager.gameActive = false;
+        const modal = document.getElementById('gameModal');
+        if (modal) modal.classList.remove('active');
+        if (this.gameManager) this.gameManager.gameActive = false;
     }
 
     openPuzzleModal() {
-        document.getElementById('puzzleModal').classList.add('active');
+        const modal = document.getElementById('puzzleModal');
+        if (modal) modal.classList.add('active');
     }
 
     closePuzzleModal() {
-        document.getElementById('puzzleModal').classList.remove('active');
+        const modal = document.getElementById('puzzleModal');
+        if (modal) modal.classList.remove('active');
     }
 
     renderGameBoard() {
+        if (!this.gameManager) return;
         const board = this.gameManager.getGameStatus().board;
         this.renderBoard('chessboard', board, 'game');
     }
 
     renderPuzzleBoard() {
+        if (!this.puzzleEngine) return;
         const board = this.puzzleEngine.board;
-        this.renderBoard('puzzleBoard', board, 'puzzle');
+        const targetId = document.getElementById('puzzleBoard') ? 'puzzleBoard' : 'chessboard';
+        this.renderBoard(targetId, board, 'puzzle');
     }
 
     renderBoard(elementId, board, mode) {
         const boardElement = document.getElementById(elementId);
+        if (!boardElement) return;
         boardElement.innerHTML = '';
 
         for (let r = 0; r < 8; r++) {
@@ -164,7 +186,7 @@ class ChessApp {
 
                 const piece = board[r][c];
                 if (piece !== '.') {
-                    square.textContent = pieces[piece];
+                    square.textContent = pieces[piece] || piece;
                     square.classList.add('piece');
                 }
 
@@ -192,7 +214,7 @@ class ChessApp {
     }
 
     handleGameSquareClick(row, col) {
-        if (!this.gameManager.gameActive || !this.gameManager.engine.whiteTurn) return;
+        if (!this.gameManager || !this.gameManager.gameActive || !this.gameManager.engine.whiteTurn) return;
 
         if (this.selectedSquare === null) {
             const piece = this.gameManager.engine.board[row][col];
@@ -218,11 +240,12 @@ class ChessApp {
     }
 
     handlePuzzleSquareClick(row, col) {
+        if (!this.puzzleEngine) return;
         if (this.selectedSquare === null) {
             const piece = this.puzzleEngine.board[row][col];
             if (piece !== '.') {
                 this.selectedSquare = [row, col];
-                this.validMoves = this.gameManager.engine.getValidMoves(row, col) || [];
+                this.validMoves = (this.gameManager && this.gameManager.engine) ? this.gameManager.engine.getValidMoves(row, col) : [];
                 this.renderPuzzleBoard();
             }
         } else {
@@ -232,14 +255,21 @@ class ChessApp {
                 this.validMoves = [];
             } else {
                 const isCorrect = this.puzzleEngine.validateSolution(fromRow, fromCol, row, col);
-                const statusDiv = document.getElementById('puzzleStatus');
+                const statusDiv = document.getElementById('gameStatus') || document.getElementById('puzzleStatus');
                 
                 if (isCorrect) {
-                    statusDiv.textContent = '✅ Correct! Well done!';
-                    statusDiv.classList.add('success');
+                    if (statusDiv) {
+                        statusDiv.textContent = '✅ Correct! Well done!';
+                        statusDiv.className = 'status win';
+                    }
+                    if (typeof ArcadeSDK !== 'undefined' && ArcadeSDK.saveHighScore) {
+                        ArcadeSDK.saveHighScore('chess-game-3d', 100);
+                    }
                 } else {
-                    statusDiv.textContent = '❌ Try again!';
-                    statusDiv.classList.add('error');
+                    if (statusDiv) {
+                        statusDiv.textContent = '❌ Try again!';
+                        statusDiv.className = 'status loss';
+                    }
                 }
 
                 this.selectedSquare = null;
@@ -255,10 +285,12 @@ class ChessApp {
     }
 
     updateGameInfo() {
+        if (!this.gameManager) return;
         const status = this.gameManager.getGameStatus();
         
-        if (this.gameManager.gameMode === 'ai') {
-            document.getElementById('playerNameTop').textContent = 'AI';
+        const playerTop = document.getElementById('playerNameTop');
+        if (playerTop && this.gameManager.gameMode === 'ai') {
+            playerTop.textContent = 'AI';
         }
 
         const formatTime = (seconds) => {
@@ -267,16 +299,21 @@ class ChessApp {
             return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         };
 
-        document.getElementById('timerTop').textContent = formatTime(status.blackTime);
-        document.getElementById('timerBottom').textContent = formatTime(status.whiteTime);
+        const timerTop = document.getElementById('timerTop');
+        if (timerTop) timerTop.textContent = formatTime(status.blackTime);
 
-        if (status.inCheck) {
-            document.getElementById('gameStatus').textContent = '⚠️ Check!';
+        const timerBottom = document.getElementById('timerBottom');
+        if (timerBottom) timerBottom.textContent = formatTime(status.whiteTime);
+
+        const gameStatus = document.getElementById('gameStatus');
+        if (gameStatus && status.inCheck) {
+            gameStatus.textContent = '⚠️ Check!';
         }
     }
 
     updateMoveHistory() {
         const moveList = document.getElementById('moveList');
+        if (!moveList || !this.gameManager) return;
         moveList.innerHTML = '';
 
         const moves = this.gameManager.engine.moveHistory;
@@ -293,6 +330,7 @@ class ChessApp {
     }
 
     algebraicNotation(move) {
+        if (!move) return '';
         const cols = 'abcdefgh';
         const from = `${cols[move.from[1]]}${8 - move.from[0]}`;
         const to = `${cols[move.to[1]]}${8 - move.to[0]}`;
@@ -300,30 +338,45 @@ class ChessApp {
     }
 
     handleGameOver(result) {
-        const statusDiv = document.getElementById('gameStatus');
+        const statusDiv = document.getElementById('gameStatus') || document.getElementById('puzzleStatus');
         
-        if (result === 'win') {
-            statusDiv.textContent = '🎉 You Won!';
-            statusDiv.classList.add('win');
-        } else if (result === 'loss') {
-            statusDiv.textContent = '💔 You Lost!';
-            statusDiv.classList.add('loss');
-        } else {
-            statusDiv.textContent = '🤝 Draw!';
+        let score = (result === 'win') ? 500 : (result === 'draw' ? 100 : 0);
+        if (typeof ArcadeSDK !== 'undefined' && ArcadeSDK.saveHighScore) {
+            ArcadeSDK.saveHighScore('chess-game-3d', score);
+        }
+
+        if (statusDiv) {
+            if (result === 'win') {
+                statusDiv.textContent = '🎉 You Won!';
+                statusDiv.className = 'status win';
+            } else if (result === 'loss') {
+                statusDiv.textContent = '💔 You Lost!';
+                statusDiv.className = 'status loss';
+            } else {
+                statusDiv.textContent = '🤝 Draw!';
+                statusDiv.className = 'status';
+            }
         }
     }
 
     updatePuzzleInfo(puzzle) {
-        document.getElementById('puzzleTitle').textContent = puzzle.title;
-        document.getElementById('puzzleDifficulty').textContent = puzzle.difficulty.toUpperCase();
-        document.getElementById('puzzleRating').textContent = puzzle.rating;
-        document.getElementById('puzzleTheme').textContent = puzzle.theme;
-        document.getElementById('hintText').textContent = puzzle.hint;
+        if (!puzzle) return;
+        const setTxt = (id, txt) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = txt;
+        };
+        setTxt('puzzleTitle', puzzle.title);
+        setTxt('puzzleDifficulty', (puzzle.difficulty || '').toUpperCase());
+        setTxt('puzzleRating', puzzle.rating);
+        setTxt('puzzleTheme', puzzle.theme);
+        setTxt('hintText', puzzle.hint);
     }
 
     updateStats() {
+        if (!this.puzzleEngine) return;
         const stats = this.puzzleEngine.getStats();
         const statsContainer = document.getElementById('statsContainer');
+        if (!statsContainer) return;
         
         statsContainer.innerHTML = `
             <div class="stat-card">
@@ -346,11 +399,14 @@ class ChessApp {
     }
 
     filterPuzzles(difficulty) {
-        // Implementation for filtering
+        // Filter implementation
     }
 
     generateInitialPuzzles() {
-        this.puzzleEngine.generateNewPuzzle();
+        if (this.puzzleEngine) {
+            this.puzzleEngine.generateNewPuzzle();
+            this.renderPuzzleBoard();
+        }
     }
 }
 

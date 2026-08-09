@@ -142,10 +142,12 @@
             color: #0b0f19;
         }
     </style>
+    <link rel="stylesheet" href="../shared/arcade-theme.css">
+    <script src="../shared/arcade-sdk.js"></script>
 </head>
 <body>
 
-<a href="../index.html" class="back-btn">← Back to Arcade</a>
+<a href="../index.html" class="arcade-back-btn back-btn">← Back to Arcade</a>
 
 <div class="container">
     <h1>SNAKE // PRO</h1>
@@ -213,6 +215,9 @@
                 highScore = score;
                 localStorage.setItem("snake_high", highScore);
                 highScoreVal.textContent = String(highScore).padStart(3, '0');
+            }
+            if (typeof ArcadeSDK !== 'undefined') {
+                ArcadeSDK.saveHighScore('snake-game', score);
             }
             drawGameOver();
             clearInterval(gameInterval);

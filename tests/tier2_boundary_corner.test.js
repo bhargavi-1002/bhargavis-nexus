@@ -401,7 +401,7 @@ function runTier2Tests() {
 
     test('T2-SPACE-4: UTF-8 encoding check (no corrupted characters)', () => {
         const { htmlContent } = loadPage('space-shooter/index.html');
-        assert(!htmlContent.includes(''), 'Space Shooter HTML should contain no corrupted characters');
+        assert(!htmlContent.includes('\uFFFD') && !htmlContent.includes('?'), 'Space Shooter HTML should contain no corrupted characters');
     });
 
     test('T2-SPACE-5: Space Shooter has Back to Arcade navigation contract', () => {

@@ -64,9 +64,12 @@
             .subtitle { display: none; }
         }
     </style>
+<link rel="stylesheet" href="../shared/arcade-theme.css">
+<script src="../shared/arcade-sdk.js"></script>
 </head>
 <body>
-    <div class="game-container" id="gameContainer">
+    <a href="../index.html" class="arcade-back-btn">← Back to Arcade</a>
+    <div class="game-container glass-panel" id="gameContainer">
         <canvas id="gameCanvas" width="800" height="320"></canvas>
         
         <div class="mobile-touch-pane">
@@ -296,6 +299,7 @@
                     setTimeout(() => { playGameOverSound(); }, 250); // Chain disappointment sequencer layout
                     createParticles(player.x + player.width / 2, player.y + player.height / 2);
                     if (score > highScore) { highScore = score; highScoreVal.textContent = String(highScore).padStart(5, '0'); }
+                    if (typeof ArcadeSDK !== 'undefined') { ArcadeSDK.saveHighScore('cyber-runner', score); }
                     finalScoreVal.textContent = score; gameOverScreen.classList.remove('hidden');
                 }
             }

@@ -7,24 +7,26 @@
     <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="../shared/arcade-theme.css">
 <script src="../shared/arcade-sdk.js"></script>
+
 </head>
 <body>
-    <div class="container">
+    <a href="../index.html" class="arcade-back-btn">← Back to Arcade</a>
+    <div class="container glass-panel">
         <div class="header">
             <h1>♚ Chess Puzzle - Mate in 1 ♚</h1>
             <p class="instruction">Find the checkmate in one move!</p>
         </div>
 
-        <div class="game-info">
+        <div class="game-info glass-panel">
             <div class="turn">Turn: <span id="currentTurn">White</span></div>
             <div class="status" id="gameStatus"></div>
         </div>
 
-        <div class="board-container">
+        <div class="game-container glass-panel">
             <div id="chessboard" class="chessboard"></div>
         </div>
 
-        <div class="controls">
+        <div class="controls glass-panel">
             <button id="resetBtn" class="btn">Reset Puzzle</button>
             <button id="nextPuzzleBtn" class="btn">Next Puzzle</button>
         </div>
@@ -35,6 +37,9 @@
         </div>
     </div>
 
+    <script src="chess.js"></script>
+    <script src="aiEngine.js"></script>
+    <script src="puzzleEngine.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -217,6 +217,8 @@
 </head>
 <body>
 
+    <a href="../index.html" class="arcade-back-btn">← Back to Arcade</a>
+
     <div class="game-container">
         <header>
             <h1>MEMORY MATRIX</h1>
@@ -226,7 +228,7 @@
             </div>
             <button id="restartBtn">START GAME</button>
         </header>
-        <div class="grid-container" id="gridContainer"></div>
+        <div class="grid-container grid memory-game" id="gridContainer"></div>
     </div>
 
     <div class="modal" id="winModal">
@@ -239,7 +241,7 @@
     </div>
 
     <script>
-        const gridContainer = document.getElementById('gridContainer');
+        const gridContainer = document.getElementById('gridContainer') || document.getElementById('game-board') || document.getElementById('grid') || document.querySelector('.grid-container');
         const movesValue = document.getElementById('movesValue');
         const timerValue = document.getElementById('timerValue');
         const restartBtn = document.getElementById('restartBtn');
@@ -376,6 +378,9 @@
             playWin();
             finalMoves.textContent = moves;
             finalTime.textContent = formatTime(timeElapsed);
+            if (typeof ArcadeSDK !== 'undefined') {
+                ArcadeSDK.saveHighScore('memory-card-game', Math.max(10, 1000 - moves * 20 - timeElapsed * 5));
+            }
             setTimeout(() => winModal.classList.add('active'), 500);
         }
 

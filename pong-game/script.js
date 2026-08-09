@@ -152,6 +152,9 @@ function updateBall() {
     } else if (ball.x + ball.size > canvas.width) {
         playerScore++;
         updateScore();
+        if (typeof ArcadeSDK !== 'undefined') {
+            ArcadeSDK.saveHighScore('pong-game', playerScore);
+        }
         resetBall();
     }
 }
@@ -170,6 +173,9 @@ function resetBall() {
 function updateScore() {
     document.getElementById('playerScore').textContent = playerScore;
     document.getElementById('computerScore').textContent = computerScore;
+    if (typeof ArcadeSDK !== 'undefined') {
+        ArcadeSDK.saveHighScore('pong-game', playerScore * 100);
+    }
 }
 
 // Draw functions
