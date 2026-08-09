@@ -69,8 +69,16 @@
 <!-- BEGIN FULLSCREEN SCALING -->
 
 <style>
-/* Safe Fullscreen Scaling Mod */
-html, body {
+/* Safe Fullscreen Scaling Mod V2 */
+html {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
+body {
     margin: 0 !important;
     padding: 0 !important;
     width: 100vw !important;
@@ -103,7 +111,6 @@ function safeScale() {
     const cw = rect.width || 800;
     const ch = rect.height || 600;
     
-    // allow a little padding
     let padding = 10;
     const scaleX = window.innerWidth / (cw + padding);
     const scaleY = window.innerHeight / (ch + padding);
@@ -113,8 +120,9 @@ function safeScale() {
 }
 window.addEventListener('resize', safeScale);
 window.addEventListener('orientationchange', safeScale);
-setTimeout(safeScale, 50);
-setTimeout(safeScale, 300);
+window.addEventListener('DOMContentLoaded', safeScale);
+window.addEventListener('load', safeScale);
+setTimeout(safeScale, 500);
 </script>
 
 <!-- END FULLSCREEN SCALING -->
