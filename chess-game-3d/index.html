@@ -8,10 +8,10 @@
 <link rel="stylesheet" href="../shared/arcade-theme.css">
 <script src="../shared/arcade-sdk.js"></script>
 
-<!-- BEGIN FULLSCREEN MOD -->
+<!-- BEGIN FULLSCREEN SCALING -->
 
 <style>
-/* Injected by Fullscreen Mod */
+/* Safe Fullscreen Scaling Mod */
 html, body {
     margin: 0 !important;
     padding: 0 !important;
@@ -21,49 +21,45 @@ html, body {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    background-color: var(--bg-color, #0b0f19) !important;
 }
 
 body > .arcade-back-btn {
-    z-index: 10000;
+    position: absolute !important;
+    top: 10px !important;
+    left: 10px !important;
+    z-index: 10000 !important;
 }
 
-#gameCanvas, canvas {
-    max-width: 100vw !important;
-    max-height: 100vh !important;
-    width: auto !important;
-    height: auto !important;
-    object-fit: contain !important;
-}
-
-.container, .game-container {
-    width: 100vw !important;
-    height: 100vh !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    border-radius: 0 !important;
-    box-sizing: border-box !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-    border: none !important;
+.game-container, .container {
+    transform-origin: center;
+    margin: 0 !important;
 }
 </style>
 <script>
-// Auto-scale content for portrait and landscape
-function adjustScale() {
-    const containers = document.querySelectorAll('.container, .game-container, canvas');
-    containers.forEach(el => {
-        // Just let CSS handle the full width/height
-    });
+function safeScale() {
+    const container = document.querySelector('.game-container, .container');
+    if (!container) return;
+    
+    container.style.transform = 'none';
+    const rect = container.getBoundingClientRect();
+    const cw = rect.width || 800;
+    const ch = rect.height || 600;
+    
+    // allow a little padding
+    let padding = 10;
+    const scaleX = window.innerWidth / (cw + padding);
+    const scaleY = window.innerHeight / (ch + padding);
+    
+    const scale = Math.min(scaleX, scaleY);
+    container.style.transform = `scale(${scale})`;
 }
-window.addEventListener('resize', adjustScale);
-window.addEventListener('orientationchange', adjustScale);
-adjustScale();
+window.addEventListener('resize', safeScale);
+window.addEventListener('orientationchange', safeScale);
+setTimeout(safeScale, 50);
+setTimeout(safeScale, 300);
 </script>
 
-<!-- END FULLSCREEN MOD -->
+<!-- END FULLSCREEN SCALING -->
 </head>
 <body>
     <a href="../index.html" class="arcade-back-btn">← Back to Arcade</a>
