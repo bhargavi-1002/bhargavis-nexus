@@ -216,6 +216,66 @@
         .game-over-content p { color: var(--text-muted); font-size: 1rem; margin-bottom: 20px; font-family: monospace; }
         .game-over-content button { max-width: 200px; }
     </style>
+<!-- BEGIN FULLSCREEN SCALING -->
+
+<style>
+/* Safe Fullscreen Scaling Mod V2 */
+html {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+body > .arcade-back-btn {
+    position: absolute !important;
+    top: 10px !important;
+    left: 10px !important;
+    z-index: 10000 !important;
+}
+
+.game-container, .container {
+    transform-origin: center;
+    margin: 0 !important;
+}
+</style>
+<script>
+function safeScale() {
+    const container = document.querySelector('.game-container, .container');
+    if (!container) return;
+    
+    container.style.transform = 'none';
+    const rect = container.getBoundingClientRect();
+    const cw = rect.width || 800;
+    const ch = rect.height || 600;
+    
+    let padding = 10;
+    const scaleX = window.innerWidth / (cw + padding);
+    const scaleY = window.innerHeight / (ch + padding);
+    
+    const scale = Math.min(scaleX, scaleY);
+    container.style.transform = `scale(${scale})`;
+}
+window.addEventListener('resize', safeScale);
+window.addEventListener('orientationchange', safeScale);
+window.addEventListener('DOMContentLoaded', safeScale);
+window.addEventListener('load', safeScale);
+setTimeout(safeScale, 500);
+</script>
+
+<!-- END FULLSCREEN SCALING -->
 </head>
 <body>
     <a href="../index.html" class="arcade-back-btn">← Back to Arcade</a>

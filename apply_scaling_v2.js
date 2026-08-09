@@ -8,7 +8,9 @@ const directories = [
     'pong-game',
     'snake-game',
     'chess-game-3d',
-    'memory-card-game'
+    'memory-card-game',
+    'tic-tac-toe',
+    'number-guessing'
 ];
 
 const injectHTML = `
