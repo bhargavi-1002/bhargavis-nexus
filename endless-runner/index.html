@@ -1,15 +1,16 @@
 <!DOCTYPE html><html><head><meta charset='UTF-8'><title>Endless Runner X</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}body{background:#070512;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;color:#fff;}.game-container{position:relative;width:800px;height:320px;border:4px solid #00f0ff;border-radius:16px;box-shadow:0 0 30px rgba(0,240,255,0.3);overflow:hidden;background:#0f0c20;}canvas{display:block;width:100%;height:100%;}.ui-layer{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:15px;pointer-events:none;}.top-row{display:flex;justify-content:space-between;align-items:center;width:100%;}.score-board{font-size:22px;font-weight:900;letter-spacing:2px;text-shadow:0 0 10px #00f0ff;}.high-score{color:#ff007f;font-size:16px;}.controls-wrapper{display:flex;align-items:center;gap:12px;pointer-events:auto;}.mode-indicator{font-size:14px;font-weight:bold;padding:4px 10px;border-radius:4px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);}.theme-selector{display:flex;gap:8px;background:rgba(0,0,0,0.5);padding:6px;border-radius:20px;}.theme-btn{width:20px;height:20px;border-radius:50%;border:2px solid #fff;cursor:pointer;}.btn-cyber{background:#00f0ff;}.btn-toxic{background:#39ff14;}.btn-sunset{background:#ff9900;}.screen-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(10,7,24,0.9);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:10;text-align:center;}h1{font-size:46px;margin-bottom:5px;text-transform:uppercase;letter-spacing:6px;font-weight:900;}.subtitle{font-size:16px;color:#8a84a3;margin-bottom:25px;}.menu-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);padding:20px;border-radius:12px;width:400px;}.menu-label{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#00f0ff;margin-bottom:12px;font-weight:bold;}.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:25px;}.diff-btn{padding:10px;font-size:14px;font-weight:bold;color:#fff;background:rgba(255,255,255,0.05);border:2px solid rgba(255,255,255,0.1);border-radius:8px;cursor:pointer;text-transform:uppercase;pointer-events:auto;}.action-btn{width:100%;padding:14px;font-size:18px;font-weight:bold;color:#0f0c20;border:none;border-radius:8px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;pointer-events:auto;}.action-btn:hover{transform:translateY(-2px);color:#fff;}.hidden{display:none!important;}</style><link rel="stylesheet" href="../shared/arcade-theme.css">
 <script src="../shared/arcade-sdk.js"></script>
-<!-- BEGIN FULLSCREEN SCALING -->
+<!-- BEGIN UNIVERSAL SCALING -->
 
 <style>
-/* Safe Fullscreen Scaling Mod V2 */
+/* Universal Responsive Scaling Mod */
 html {
     margin: 0 !important;
     padding: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
     overflow: hidden !important;
+    background: #000 !important;
 }
 
 body {
@@ -21,30 +22,49 @@ body {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
+    background: #000 !important;
 }
 
 body > .arcade-back-btn {
     position: absolute !important;
-    top: 10px !important;
-    left: 10px !important;
+    top: 15px !important;
+    left: 15px !important;
     z-index: 10000 !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    color: #fff !important;
+    font-family: sans-serif !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
 .game-container, .container {
-    transform-origin: center;
+    transform-origin: center center !important;
     margin: 0 !important;
+    position: relative !important;
 }
 </style>
 <script>
 function safeScale() {
-    const container = document.querySelector('.game-container, .container');
+    const container = document.querySelector('.game-container') || document.querySelector('.container');
     if (!container) return;
     
+    // Reset transform to get accurate bounding client rect
     container.style.transform = 'none';
-    const rect = container.getBoundingClientRect();
-    const cw = rect.width || 800;
-    const ch = rect.height || 600;
     
+    // Some games use canvas directly for size, get inner width/height
+    let cw = container.offsetWidth || 800;
+    let ch = container.offsetHeight || 600;
+    
+    // If container is taking full width erroneously, fallback to child canvas size
+    const canvas = container.querySelector('canvas');
+    if (canvas && (cw > window.innerWidth || ch > window.innerHeight)) {
+        cw = canvas.width || cw;
+        ch = canvas.height || ch;
+    }
+    
+    // Calculate scale to fit within viewport
     let padding = 10;
     const scaleX = window.innerWidth / (cw + padding);
     const scaleY = window.innerHeight / (ch + padding);
@@ -56,66 +76,12 @@ window.addEventListener('resize', safeScale);
 window.addEventListener('orientationchange', safeScale);
 window.addEventListener('DOMContentLoaded', safeScale);
 window.addEventListener('load', safeScale);
+setTimeout(safeScale, 100);
 setTimeout(safeScale, 500);
+setTimeout(safeScale, 1000);
 </script>
 
-<!-- END FULLSCREEN SCALING -->
-<!-- BEGIN FULLSCREEN MOD -->
-
-<style>
-/* Injected by Fullscreen Mod */
-html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    overflow: hidden !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    background-color: var(--bg-color, #0b0f19) !important;
-}
-
-body > .arcade-back-btn {
-    z-index: 10000;
-}
-
-#gameCanvas, canvas {
-    max-width: 100vw !important;
-    max-height: 100vh !important;
-    width: auto !important;
-    height: auto !important;
-    object-fit: contain !important;
-}
-
-.container, .game-container {
-    width: 100vw !important;
-    height: 100vh !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    border-radius: 0 !important;
-    box-sizing: border-box !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-    border: none !important;
-}
-</style>
-<script>
-// Auto-scale content for portrait and landscape
-function adjustScale() {
-    const containers = document.querySelectorAll('.container, .game-container, canvas');
-    containers.forEach(el => {
-        // Just let CSS handle the full width/height
-    });
-}
-window.addEventListener('resize', adjustScale);
-window.addEventListener('orientationchange', adjustScale);
-adjustScale();
-</script>
-
-<!-- END FULLSCREEN MOD -->
+<!-- END UNIVERSAL SCALING -->
 </head><body>
 <a href="../index.html" class="arcade-back-btn">← Back to Arcade</a>
 <div class='game-container' id='gameContainer'><canvas id='gameCanvas' width='800' height='320'></canvas><div class='ui-layer'><div class='top-row'><div class='score-board' id='scoreBoard'><div>SCORE: <span id='scoreVal'>00000</span></div><div class='high-score' id='highScoreContainer'>HI: <span id='highScoreVal'>00000</span></div></div><div class='controls-wrapper'><div class='mode-indicator' id='currentModeLabel'>MEDIUM</div><div class='theme-selector'><div class='theme-btn btn-cyber' onclick='switchTheme("cyber")'></div><div class='theme-btn btn-toxic' onclick='switchTheme("toxic")'></div><div class='theme-btn btn-sunset' onclick='switchTheme("sunset")'></div></div></div></div></div><div id='startScreen' class='screen-overlay'><h1>Endless Runner X</h1><div class='subtitle'>Press Spacebar or Click to jump</div><div class='menu-box'><div class='menu-label'>Difficulty</div><div class='diff-grid'><button class='diff-btn' id='b-easy' onclick='setDifficulty("easy")'>Easy</button><button class='diff-btn' id='b-medium' onclick='setDifficulty("medium")'>Medium</button><button class='diff-btn' id='b-hard' onclick='setDifficulty("hard")'>Hard</button></div><button id='startBtn' class='action-btn'>Launch</button></div></div><div id='gameOverScreen' class='screen-overlay hidden'><h1>System Crash</h1><div class='subtitle'>Obstacle hit!</div><div class='menu-box'><p style='font-size:20px;margin-bottom:20px;'>SCORE: <span id='finalScoreVal' style='color:#ff007f;'>0</span></p><button id='restartBtn' class='action-btn'>Reboot</button></div></div></div><script>const canvas=document.getElementById('gameCanvas'),ctx=canvas.getContext('2d'),scoreVal=document.getElementById('scoreVal'),highScoreVal=document.getElementById('highScoreVal'),finalScoreVal=document.getElementById('finalScoreVal'),startScreen=document.getElementById('startScreen'),gameOverScreen=document.getElementById('gameOverScreen'),startBtn=document.getElementById('startBtn'),restartBtn=document.getElementById('restartBtn'),currentModeLabel=document.getElementById('currentModeLabel');const themes={cyber:{bgStart:'#140d2b',bgEnd:'#220d40',accent:'#00f0ff',player:'#00f0ff',obstacle:'#ff007f',floor:'#0a0517',grid:'#1f123a'},toxic:{bgStart:'#07140b',bgEnd:'#0f2413',accent:'#39ff14',player:'#39ff14',obstacle:'#da70d6',floor:'#040b06',grid:'#102414'},sunset:{bgStart:'#2b0c1b',bgEnd:'#421324',accent:'#ff9900',player:'#ff9900',obstacle:'#ff0055',floor:'#17050e',grid:'#330d1d'}};let currentTheme='cyber';const difficultySettings={easy:{speed:4.5,gravity:0.55,jump:-11.5,gap:90,scale:0.1},medium:{speed:6.0,gravity:0.65,jump:-12.5,gap:75,scale:0.2},hard:{speed:8.0,gravity:0.75,jump:-14.0,gap:60,scale:0.35}};let selectedMode='medium';let audioCtx=null,bmmInterval=null,musicStep=0;function initAudio(){if(!audioCtx){audioCtx=new(window.AudioContext||window.webkitAudioContext)();startMusic();}}function playSound(f,t,d,v=0.1,s=null){if(!audioCtx)return;const now=audioCtx.currentTime,osc=audioCtx.createOscillator(),g=audioCtx.createGain();osc.type=t;if(Array.isArray(f)){f.forEach((note,i)=>osc.frequency.setValueAtTime(note,now+(d/f.length)*i));}else{osc.frequency.setValueAtTime(f,now);if(s)osc.frequency.exponentialRampToValueAtTime(s,now+d);}g.gain.setValueAtTime(v,now);g.gain.exponentialRampToValueAtTime(1e-5,now+d);osc.connect(g);g.connect(audioCtx.destination);osc.start(now);osc.stop(now+d);}function playJumpSound(){playSound(180,'triangle',0.18,0.35,520);}function playScoreSound(){playSound([523,659],'sine',0.15,0.1);}function playClearObstacleSound(){playSound([784,1046,1318],'sine',0.18,0.2);}

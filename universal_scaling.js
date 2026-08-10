@@ -1,14 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong Game</title>
-    <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="../shared/arcade-theme.css">
-<script src="../shared/arcade-sdk.js"></script>
-<!-- BEGIN UNIVERSAL SCALING -->
+const fs = require('fs');
+const path = require('path');
 
+const directories = [
+    'chess-game-3d',
+    'endless-runner',
+    'memory-card-game',
+    'number-guessing',
+    'pong-game',
+    'snake-game',
+    'space-shooter',
+    'tic-tac-toe'
+];
+
+const injectHTML = `
 <style>
 /* Universal Responsive Scaling Mod */
 html {
@@ -77,7 +81,7 @@ function safeScale() {
     const scaleY = window.innerHeight / (ch + padding);
     
     const scale = Math.min(scaleX, scaleY);
-    container.style.transform = `scale(${scale})`;
+    container.style.transform = \`scale(\${scale})\`;
 }
 window.addEventListener('resize', safeScale);
 window.addEventListener('orientationchange', safeScale);
@@ -87,39 +91,21 @@ setTimeout(safeScale, 100);
 setTimeout(safeScale, 500);
 setTimeout(safeScale, 1000);
 </script>
+`;
 
-<!-- END UNIVERSAL SCALING -->
-</head>
-<body>
-    <a href="../index.html" class="arcade-back-btn">← Back to Arcade</a>
-    <div class="container">
-        <div class="header">
-            <h1>PONG</h1>
-            <div class="scoreboard">
-                <div class="score-section">
-                    <p class="score-label">Player</p>
-                    <p class="score" id="playerScore">0</p>
-                </div>
-                <div class="divider">:</div>
-                <div class="score-section">
-                    <p class="score-label">Computer</p>
-                    <p class="score" id="computerScore">0</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="game-info">
-            <p>Mouse or <strong>↑↓ Arrow Keys</strong> to control left paddle</p>
-        </div>
-
-        <canvas id="pongCanvas" width="800" height="400"></canvas>
-
-        <div class="footer">
-            <button id="startBtn" class="btn">Start Game</button>
-            <button id="resetBtn" class="btn">Reset Score</button>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+directories.forEach(dir => {
+    const indexPath = path.join(__dirname, dir, 'index.html');
+    if (fs.existsSync(indexPath)) {
+        let content = fs.readFileSync(indexPath, 'utf8');
+        
+        // Remove previous mods
+        content = content.replace(/<!-- BEGIN FULLSCREEN SCALING -->[\s\S]*?<!-- END FULLSCREEN SCALING -->\n?/g, '');
+        content = content.replace(/<!-- BEGIN FULLSCREEN MOD -->[\s\S]*?<!-- END FULLSCREEN MOD -->\n?/g, '');
+        content = content.replace(/<!-- BEGIN UNIVERSAL SCALING -->[\s\S]*?<!-- END UNIVERSAL SCALING -->\n?/g, '');
+        
+        content = content.replace('</head>', `<!-- BEGIN UNIVERSAL SCALING -->\n${injectHTML}\n<!-- END UNIVERSAL SCALING -->\n</head>`);
+        
+        fs.writeFileSync(indexPath, content);
+        console.log(`Updated ${dir}/index.html`);
+    }
+});
